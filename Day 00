@@ -2,8 +2,8 @@ SELECT name, age FROM person WHERE address = 'Kazan';
 
 SELECT name, age FROM person WHERE address = 'Kazan' AND  gender = 'female' ORDER BY NAME;
 
-SELECT name FROM pizzeria WHERE rating >= 3.5 and rating <= 5 ORDER BY rating;
-ELECT name FROM pizzeria WHERE rating BETWEEN 3.5 and 5 ORDER BY rating;
+SELECT name,rating FROM pizzeria WHERE rating >= 3.5 and rating <= 5 ORDER BY rating;
+SELECT name, rating FROM pizzeria WHERE rating BETWEEN 3.5 and 5 ORDER BY rating;
 
 SELECT DISTINCT person_id
 FROM person_visits
@@ -13,7 +13,7 @@ ORDER BY person_id DESC;
 
 
 SELECT CONCAT(
-   '''', name, '''',
+   name,
    ' (age:', age,
    ',gender:', '''', gender, '''',
    ',address:', '''', address, ''')'
@@ -26,7 +26,7 @@ SELECT
           FROM person
           WHERE person.id = person_order.person_id) AS NAME 
 FROM person_order
-WHERE menu_id IN(13,14,18) AND order_date = '2022-01-07';
+WHERE (menu_id = 13 OR menu_id = 14 OR menu_id = 18) AND order_date = '2022-01-07';
 
 SELECT
    (SELECT name
@@ -36,7 +36,7 @@ SELECT
          FROM person
          WHERE person.id = person_order.person_id) as check_name
 FROM person_order
-WHERE menu_id IN(13,14,18) AND order_date = '2022-01-07';
+WHERE (menu_id = 13 OR menu_id = 14 OR menu_id = 18) AND order_date = '2022-01-07';
 
 
 SELECT id, name,
@@ -55,7 +55,7 @@ WHERE id % 2 = 0
 ORDER BY id;
 
 
-10)SELECT (SELECT name
+SELECT (SELECT name
        FROM person
        WHERE pv.person_id = person.id) AS person_name,
        (SELECT name
@@ -65,5 +65,3 @@ FROM (SELECT pizzeria_id, person_id
      FROM person_visits
      WHERE visit_date BETWEEN '2022-01-07' AND '2022-01-09') AS pv
 ORDER BY person_name ASC, pizzeria_name DESC;
-
-

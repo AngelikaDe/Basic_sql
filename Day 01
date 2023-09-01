@@ -1,0 +1,92 @@
+SELECT id as object_id, pizza_name as object_name
+FROM menu
+UNION
+SELECT id as object_id, name as object_name
+FROM person
+ORDER BY object_id, object_name;
+
+SELECT object_name
+FROM (
+    SELECT name as object_name, 1 as source_order
+    FROM person
+    UNION ALL
+    SELECT pizza_name as object_name, 2 as source_order
+    FROM menu
+) AS combined_data
+ORDER BY source_order, object_name;
+
+SELECT DISTINCT pizza_name
+FROM menu
+ORDER BY pizza_name;
+
+SELECT action_date, person_id
+FROM (
+    SELECT visit_date as action_date, person_id
+    FROM person_visits
+    UNION ALL
+    SELECT order_date as action_date, person_id
+    FROM person_order
+) AS combined_data
+GROUP BY action_date, person_id
+ORDER BY action_date ASC, person_id DESC;
+
+
+SELECT person_id
+FROM person_order
+WHERE order_date = '2022-01-07'
+UNION ALL
+SELECT person_id
+FROM person_visits
+WHERE visit_date = '2022-01-07';
+
+SELECT person.id, person.name, person.age, person.gender, person.address, pizzeria.id, pizzeria.id, pizzeria.name, pizzeria.rating
+FROM person, pizzeria
+ORDER BY person.id, pizzeria.id;
+
+SELECT action_date, person.name as person_name
+FROM (
+    SELECT visit_date as action_date, person_id
+    FROM person_visits
+    UNION ALL
+    SELECT order_date as action_date, person_id
+    FROM person_order
+) AS combined_data
+LEFT JOIN person ON combined_data.person_id = person.id
+GROUP BY action_date, person_name
+ORDER BY action_date ASC, person_name DESC;
+
+SELECT order_date, CONCAT( person.name,' (age:', age, ')') as person_information
+FROM (
+    SELECT order_date as order_date, person_id
+    FROM person_order
+) AS combined_data
+LEFT JOIN person ON combined_data.person_id = person.id
+GROUP BY order_date, person_information
+ORDER BY order_date ASC, person_information ASC;
+
+
+SELECT order_date, CONCAT(person.name, ' (age:', age, ')') as person_information
+FROM person_order
+NATURAL JOIN person
+GROUP BY order_date, person_information
+ORDER BY order_date ASC, person_information ASC;
+
+
+SELECT name
+FROM pizzeria
+WHERE pizzeria.id NOT IN (
+    SELECT DISTINCT pizzeria_id
+    FROM person_visits
+);
+
+SELECT name
+FROM pizzeria
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM person_visits
+    WHERE pizzeria.id = person_visits.pizzeria_id
+);
+
+SELECT person.name as person_name, menu.pizza_name as pizza_name, pizzeria.name as pizzeria_name
+FROM person, menu, pizzeria
+ORDER BY person_name, pizza_name, pizzeria_name ASC;
