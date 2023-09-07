@@ -23,12 +23,11 @@ SELECT action_date, person_id
 FROM (
     SELECT visit_date as action_date, person_id
     FROM person_visits
-    UNION ALL
+    INTERSECT
     SELECT order_date as action_date, person_id
     FROM person_order
 ) AS combined_data
-GROUP BY action_date, person_id
-ORDER BY action_date ASC, person_id DESC;
+ORDER BY action_date, person_id DESC;
 
 
 SELECT person_id
@@ -47,12 +46,11 @@ SELECT action_date, person.name as person_name
 FROM (
     SELECT visit_date as action_date, person_id
     FROM person_visits
-    UNION ALL
+    INTERSECT
     SELECT order_date as action_date, person_id
     FROM person_order
 ) AS combined_data
-LEFT JOIN person ON combined_data.person_id = person.id
-GROUP BY action_date, person_name
+INNER JOIN person ON combined_data.person_id = person.id
 ORDER BY action_date ASC, person_name DESC;
 
 SELECT order_date, CONCAT( person.name,' (age:', age, ')') as person_information
@@ -60,23 +58,22 @@ FROM (
     SELECT order_date as order_date, person_id
     FROM person_order
 ) AS combined_data
-LEFT JOIN person ON combined_data.person_id = person.id
-GROUP BY order_date, person_information
+JOIN person ON combined_data.person_id = person.id
 ORDER BY order_date ASC, person_information ASC;
 
 
 SELECT order_date, CONCAT(person.name, ' (age:', age, ')') as person_information
 FROM person_order
 NATURAL JOIN person
-GROUP BY order_date, person_information
 ORDER BY order_date ASC, person_information ASC;
 
 
 SELECT name
 FROM pizzeria
 WHERE pizzeria.id NOT IN (
-    SELECT DISTINCT pizzeria_id
+    SELECT pizzeria_id
     FROM person_visits
+    WHERE pizzeria.id = person_visits.pizzeria_id
 );
 
 SELECT name
@@ -91,6 +88,5 @@ SELECT person.name as person_name, menu.pizza_name as pizza_name, pizzeria.name 
 FROM person
 INNER JOIN person_order ON person.id = person_order.person_id
 INNER JOIN menu ON person_order.menu_id = menu.id
-INNER JOIN person_visits ON person.id = person_visits.person_id
-INNER JOIN pizzeria ON person_visits.pizzeria_id = pizzeria.id
+INNER JOIN pizzeria ON menu.pizzeria_id = pizzeria.id
 ORDER BY person_name ASC, pizza_name ASC, pizzeria_name ASC;
