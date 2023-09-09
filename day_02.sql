@@ -92,3 +92,41 @@ FROM person p1
 JOIN person p2 ON p1.address = p2.address AND p1.name < p2.name
 ORDER BY person_name1, person_name2, common_address;
 
+
+-- WITH pizzerias AS (SELECT m.pizza_name, p.name AS pizzeria_name, m.price, p.id
+--                    FROM menu m
+--                     JOIN public.pizzeria p on m.pizzeria_id = p.id)
+-- SELECT DISTINCT p2.pizza_name, p1.pizzeria_name AS pizzeria_name_1, p2.pizzeria_name AS pizzeria_name_2, p2.price
+-- FROM pizzerias p1
+-- JOIN pizzerias p2 ON (
+--       p2.pizza_name = p1.pizza_name
+--       AND p1.price = p2.price
+--       AND p1.pizzeria_name != p2.pizzeria_name
+--         and p1.id < p2.id
+--     )
+
+-- insert into menu(id, pizzeria_id, pizza_name, price)
+-- values (19, 2, 'greek pizza', 800)
+
+-- insert into menu(id, pizzeria_id, pizza_name, price)
+-- values ((select max(id)
+--          from menu) + 1, (select id
+--                           from pizzeria
+--                           where name = 'Dominos'), 'greek pizza', 900)
+
+
+-- INSERT INTO person_visits (id, person_id, pizzeria_id, visit_date)
+-- VALUES
+-- (
+--   (SELECT MAX(id) + 1 FROM person_visits),
+--   (SELECT id FROM person WHERE name = 'Denis'),
+--   (SELECT id FROM pizzeria WHERE name = 'Dominos'),
+--   '2022-02-22'
+-- ),
+-- (
+--   (SELECT MAX(id) + 1 FROM person_visits),
+--   (SELECT id FROM person WHERE name = 'Irina'),
+--   (SELECT id FROM pizzeria WHERE name = 'Dominos'),
+--   '2022-02-22'
+-- );
+
