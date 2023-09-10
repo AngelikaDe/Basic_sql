@@ -34,3 +34,11 @@ except
 select visit_date
 from person_visits
 order by missing_date
+
+04??
+
+
+create view v_price_with_discount as (select p.name, pizza_name, price, m.price - (m.price * 0.1) AS discount_price
+from person_order
+join person p on p.id = person_order.person_id
+join menu m on person_order.menu_id = m.id)

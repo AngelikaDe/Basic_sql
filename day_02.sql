@@ -60,12 +60,12 @@ where person.name = 'Anna' or person.name = 'Denis'
 order by pizza_name, pizzeria_name
 
 
-SELECT pizzeria.name
-FROM person_order
-JOIN person ON person_order.person_id = person.id
-JOIN menu ON person_order.menu_id = menu.id
-JOIN pizzeria ON pizzeria.id = menu.pizzeria_id
-WHERE person.name = 'Dmitriy' AND person_order.order_date = '2022-01-08' AND menu.price < 800;
+select pizzeria.name as pizzeria_name
+from person_visits pv
+    join person p on pv.person_id = p.id
+    join pizzeria on pizzeria.id = pv.pizzeria_id
+    join menu m on m.pizzeria_id = pv.pizzeria_id
+where p.name = 'Dmitriy' and pv.visit_date = '2022-01-08' and m.price < 800;
 
 
 SELECT person.name

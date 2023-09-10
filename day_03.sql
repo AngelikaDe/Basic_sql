@@ -235,3 +235,57 @@ where order_date = '2022-02-25'
 
 delete from menu
 where pizza_name = 'greek pizza'
+
+
+create view mv_dmitriy_visits_and_eats as(
+select p.name as pizzeria_name
+from person_order po
+join person p on po.person_id = p.id
+join menu m on po.menu_id = m.pizzeria_id
+join pizzeria on m.pizzeria_id = pizzeria.id
+where p.name = 'Dmitry' and po.order_date = '2022-01-08' and m.price < 800
+)
+
+
+
+create materialized view mv_dmitriy_visits_and_eats as(
+select pizzeria.name as pizzeria_name
+from person_visits pv
+    join person p on pv.person_id = p.id
+    join pizzeria on pizzeria.id = pv.pizzeria_id
+    join menu m on m.pizzeria_id = pv.pizzeria_id
+where p.name = 'Dmitriy' and pv.visit_date = '2022-01-08' and m.price < 800)
+
+
+
+
+
+INSERT INTO person_order (id, person_id, menu_id, order_date)
+SELECT
+  (SELECT MAX(id) + 1 FROM person_order),
+  (SELECT id FROM person WHERE name = 'Dmitriy' LIMIT 1),
+  (SELECT menu.id
+   FROM menu
+   JOIN person_visits pv ON menu.pizzeria_id = pv.pizzeria_id
+   JOIN pizzeria ON pv.pizzeria_id = pizzeria.id
+   WHERE price < 800 AND pizzeria.name != 'Papa Jones' LIMIT 1),
+  '2022-01-08';
+INSERT INTO person_visits (id, person_id, pizzeria_id)
+SELECT
+    (SELECT MAX(id) + 1 FROM person_visits),
+    (SELECT id FROM person WHERE name = 'Dmitriy' LIMIT 1),
+    (SELECT pizzeria_id
+     FROM person_order
+     JOIN menu m ON person_order.menu_id = m.id
+     JOIN pizzeria p ON m.pizzeria_id = p.id
+     JOIN person ON person_order.person_id = person.id
+     WHERE price < 800 AND p.name != 'Papa Jones' AND person.name = 'Dmitriy' LIMIT 1);
+
+
+refresh materialized view mv_dmitriy_visits_and_eats
+
+
+
+drop view v_generated_dates,v_price_with_discount,
+    v_persons_female,v_persons_male;
+drop materialized view mv_dmitriy_visits_and_eats;
