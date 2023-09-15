@@ -42,3 +42,11 @@ create view v_price_with_discount as (select p.name, pizza_name, price, m.price 
 from person_order
 join person p on p.id = person_order.person_id
 join menu m on person_order.menu_id = m.id)
+
+
+refresh materialized view mv_dmitriy_visits_and_eats
+
+
+drop view v_generated_dates,v_price_with_discount,
+    v_persons_female,v_persons_male;
+drop materialized view mv_dmitriy_visits_and_eats;
