@@ -69,3 +69,4 @@ CREATE TEMP SEQUENCE seq_person_discounts START WITH 1;
 SELECT (SELECT setval('seq_person_discounts', max(id)) FROM person_discounts);
 ALTER TABLE person_discounts
 ALTER COLUMN id set default nextval('seq_person_discounts');
+
