@@ -65,3 +65,7 @@ COMMENT ON COLUMN person_discounts.person_id IS 'The identifier of the person wh
 COMMENT ON COLUMN person_discounts.pizzeria_id IS 'The identifier of the pizzeria where the discount is applied.';
 COMMENT ON COLUMN person_discounts.discount IS 'The percentage discount applied to the order (0 to 100 percent).';
 
+CREATE TEMP SEQUENCE seq_person_discounts START WITH 1;
+SELECT (SELECT setval('seq_person_discounts', max(id)) FROM person_discounts);
+ALTER TABLE person_discounts
+ALTER COLUMN id set default nextval('seq_person_discounts');
