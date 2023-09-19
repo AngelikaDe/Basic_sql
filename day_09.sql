@@ -251,3 +251,39 @@ BEGIN
 END;
 $$
 LANGUAGE plpgsql;
+
+
+#7
+CREATE OR REPLACE FUNCTION func_minimum(arr DOUBLE PRECISION[])
+RETURNS DOUBLE PRECISION AS $$
+DECLARE
+    i INT := 1;
+    min_val DOUBLE PRECISION := arr[1];
+BEGIN
+    WHILE i <= array_length(arr, 1) LOOP
+        IF arr[i] < min_val THEN
+            min_val := arr[i];
+        END IF;
+        i := i + 1;
+    END LOOP;
+    RETURN min_val;
+END;
+$$ LANGUAGE plpgsql;
+
+
+SELECT func_minimum(ARRAY[ -1.0, 5.0, 4.4]);
+
+
+#8
+CREATE OR REPLACE FUNCTION fnc_fibonacci(n INT)
+RETURNS INT AS $$
+BEGIN
+    IF n <= 1 THEN
+        RETURN n;
+    ELSE
+        RETURN fnc_fibonacci(n - 1) + fnc_fibonacci(n - 2);
+    END IF;
+END;
+$$ LANGUAGE plpgsql;
+
+
