@@ -2,7 +2,7 @@
 -- BEGIN;
 
 -- -- 1 session
--- UPDATE pizzeria DET rating = 5 WHERE name = 'Pizza Hut';
+-- UPDATE pizzeria SET rating = 5 WHERE name = 'Pizza Hut';
 -- COMMIT;
 
 -- -- 2 session
@@ -10,3 +10,11 @@
 
 -- -- 2 session
 -- SELECT * FROM pizzeria;
+
+
+#1
+
+
+
+#2
+SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
